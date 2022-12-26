@@ -22,10 +22,20 @@
 #   - highcard: else output: (highcards)
 
 
+ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
+suits = ["c", "d", "h", "s"]
+
+
 def parsecard(cardstring: str) -> list:
     """
     >>> parsecard("7h")
     [5, 2]
+    
+    >>> parsecard("Ac")
+    [12, 0]
+    
+    >>> parsecard("Qd")
+    [10, 1]
 
     Argument
     --------
@@ -36,12 +46,25 @@ def parsecard(cardstring: str) -> list:
     -------
     list
         list (len = 2) containing int representing card rank and suit e.g. [5, 2]
-        ranks: e.g. 0 = "2", 5 = "7", 9 = "J", 12 = "A"
-        suits: 0 = "c", 1 = "d", 2 = "h", 3 = "s"
 
     """
 
-    return
+    if len(cardstring) != 2:
+        raise ValueError("String must have length 2")
+
+    if not cardstring[0] in ranks:
+        raise ValueError(
+            "First character of string must be a rank from the following list: "
+            + str(ranks)
+        )
+
+    if not cardstring[1] in suits:
+        raise ValueError(
+            "Second character of string must be a suit from the following list: "
+            + str(suits)
+        )
+
+    return [ranks.index(cardstring[0]), suits.index(cardstring[1])]
 
 
 class Hand:
