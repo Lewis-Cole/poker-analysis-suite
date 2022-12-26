@@ -85,6 +85,7 @@ class Hand:
     """
 
     def __init__(self, cardsstring: str) -> None:
+        self.cardsstring = cardsstring
         self.cards = [
             parsecard(cardsstring[i : i + 2]) for i in range(0, len(cardsstring), 2)
         ]
