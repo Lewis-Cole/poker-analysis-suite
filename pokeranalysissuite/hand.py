@@ -30,10 +30,10 @@ def parsecard(cardstring: str) -> list:
     """
     >>> parsecard("7h")
     [5, 2]
-    
+
     >>> parsecard("Ac")
     [12, 0]
-    
+
     >>> parsecard("Qd")
     [10, 1]
 
@@ -81,5 +81,7 @@ class Hand:
 
     """
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, cardstrings: list) -> None:
+        self.cards = [
+            parsecard(cardstrings[i : i + 2]) for i in range(0, len(cardstrings), 2)
+        ]
