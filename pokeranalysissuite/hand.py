@@ -73,15 +73,18 @@ class Hand:
 
     Arguments
     ---------
-    cards : list
-        list (len = no. of cards) containing list (len = 2) representing card e.g. [5, 2]
+    cardsstring : str
+        string containing all cards in hand e.g. "7hAcQd9c9d"
 
     Methods
     -------
+    cards
+        argument: none
+        returns: list containing cards e.g. [[5, 2], [12, 0], [10, 1], [7, 0], [7, 1]]
 
     """
 
-    def __init__(self, cardstrings: list) -> None:
+    def __init__(self, cardsstring: str) -> None:
         self.cards = [
-            parsecard(cardstrings[i : i + 2]) for i in range(0, len(cardstrings), 2)
+            parsecard(cardsstring[i : i + 2]) for i in range(0, len(cardsstring), 2)
         ]
