@@ -89,3 +89,65 @@ class Hand:
         self.cards = [
             parsecard(cardsstring[i : i + 2]) for i in range(0, len(cardsstring), 2)
         ]
+
+        self.rankcount = [0 for i in ranks]
+        self.suitcount = [0 for i in suits]
+
+        for card in self.cards:
+            self.rankcount[card[0]] += 1
+            self.suitcount[card[1]] += 1
+
+        self.flushsuits = [self.suitcount.index(i) for i in self.suitcount if i >= 5]
+        for flushsuit in self.flushsuits:
+            self.flushrankcount = [0 for i in ranks]
+            for card in self.cards:
+                if card[1] == flushsuit:
+                    self.flushrankcount[card[0]] += 1
+
+        self.quads = [self.rankcount.index(i) for i in self.rankcount if i == 4]
+        self.trips = [self.rankcount.index(i) for i in self.rankcount if i == 3]
+        self.pairs = [self.rankcount.index(i) for i in self.rankcount if i == 2]
+
+    def teststraight(self, cardsrankcount: list) -> tuple[bool, int]:
+        """
+        Summary line.
+
+        Extended description of function.
+
+        >>> teststraight([0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1, 0, 1])
+        (False, None)
+
+        >>> teststraight([0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 1, 0, 0])
+        (True, 10)
+
+        >>> teststraight([1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1])
+        (True, 3)
+
+        Arguments
+        ---------
+        cardsrankcount : list
+            list of card ranks e.g. [1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1]
+
+        Returns
+        -------
+        tuple(bool, int)
+            (bool = there is a straight, int = rank of straight)
+
+        """
+
+        straightcounter = 0
+
+        for i in range(1, len(cardsrankcount) + 1):
+            if cardsrankcount[-i] >= 1:
+                straightcounter += 1
+                if straightcounter == 5:
+                    return (True, 17 - i)
+            if cardsrankcount[-i] == 0:
+                straightcounter = 0
+
+        if cardsrankcount[-1] >= 1:
+            straightcounter += 1
+            if straightcounter == 5:
+                return (True, 3)
+
+        return (False, None)
