@@ -1,25 +1,63 @@
-# - File: hand.py
-#   - function parsecard() input: string (len = 2) rank and suit string (e.g. '7h'), output: list (len = 2) int for rank and suit
-#       (e.g. [5, 2] - ranks: 0 = "2", 5 = "7", 9 = "J", 12 = "A"; suits: 0 = "c", 1 = "d", 2 = "h", 3 = "s")
-#   - class Hand() input: list (len = no. of cards) cards (e.g. [[5, 2], [2, 2], [10, 2], [10, 3], [5, 1]]), card is list (len = 2) int for rank and suit (e.g. [5, 2])
-#   - determine strength of hand
+"""
+File: hand.py
 
-# - determine hand strength
-#   - handstrength: 8 = "straightflush", 7 = "fourofakind", 6 = "fullhouse", 5 = "flush",
-#       4 = "straight", 3 = "threeofakind", 2 = "twopair", 1 = "pair", 0 = "highcard"
-#   - function testflush() output: (boolean, flushsuit, flushcards)
-#   - function teststraight() output: (boolean, straightrank) [note: go from highest to lowest rank]
-#   - straightflush: testflush() then teststraight() on flushcards output: (boolean, straightflushrank)
-#   - royalflush: if straightflush then is straightflushrank = "A" output: boolean
-#   - function generaterankdata() output: rankdata = list (len = 14) no. of cards of each rank in hand
-#   - fourofakind: if 4 in rankdata output: (boolean, quads, kicker)
-#   - fullhouse: if 3 in rankdata twice, or 3 and 2 in rank data ouput: (boolean, trips, pair)
-#   - flush: if testflush() output: (boolean, highflushcards)
-#   - straight: teststraight() on cards output: (boolean, straightrank)
-#   - threeofakind: if 3 in rankdata output: (boolean, trips, kickers)
-#   - twopair: if 2 in rankdata twice output: (boolean, firstpair, secondpair, kicker)
-#   - pair: if 2 in rankdata output: (boolean, pair, kickers)
-#   - highcard: else output: (highcards)
+Variables
+---------
+ranks: list
+suits: list
+
+Functions
+---------
+parsecard
+    converts card data from str to list of int
+    argument: str e.g. "7h"
+    returns: list e.g. [5, 2]
+
+Classes
+-------
+Hand
+    objects represent poker hands
+    argument: str e.g. "3d4h4c4d2s5hJd"
+    Properties
+        cards: list
+        cardsstring: str
+        flush: bool
+        flushrankcount: list
+        flushranks: list
+        flushsuits: list
+        fourofakind: bool
+        fourofakindkicker: int
+        fourofakindrank: int
+        fullhouse: bool
+        fullhousepairrank: int
+        fullhousetriprank: int
+        highcard: bool
+        highcards: list
+        pair: bool
+        pairkickers: list
+        pairrank: int
+        pairs: list
+        quads: list
+        rankcount: list
+        straight: bool
+        straightflush: bool
+        straightflushrank: int
+        straightrank: int
+        strength: int
+        suitcount: list
+        threeofakind: bool
+        threeofakindkickers: list
+        threeofakindrank: int
+        trips: list
+        twopair:bool
+        twopairkicker: int 
+        twopairranks: list
+    Methods
+        teststraight
+            argument: list
+            returns: tuple[bool, int]
+
+"""
 
 
 ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
@@ -69,18 +107,54 @@ def parsecard(cardstring: str) -> list:
 
 class Hand:
     """
-    Summary line.
+    Objects represent poker hands
 
-    Arguments
-    ---------
+    Argument
+    --------
     cardsstring : str
-        string containing all cards in hand e.g. "7hAcQd9c9d"
+        string containing all cards in hand e.g. "3d4h4c4d2s5hJd"
+
+    Properties
+    ----------
+        cards: list
+        cardsstring: str
+        flush: bool
+        flushrankcount: list
+        flushranks: list
+        flushsuits: list
+        fourofakind: bool
+        fourofakindkicker: int
+        fourofakindrank: int
+        fullhouse: bool
+        fullhousepairrank: int
+        fullhousetriprank: int
+        highcard: bool
+        highcards: list
+        pair: bool
+        pairkickers: list
+        pairrank: int
+        pairs: list
+        quads: list
+        rankcount: list
+        straight: bool
+        straightflush: bool
+        straightflushrank: int
+        straightrank: int
+        strength: int
+        suitcount: list
+        threeofakind: bool
+        threeofakindkickers: list
+        threeofakindrank: int
+        trips: list
+        twopair: bool
+        twopairkicker: int
+        twopairranks: list
 
     Methods
     -------
-    cards
-        argument: none
-        returns: list containing cards e.g. [[5, 2], [12, 0], [10, 1], [7, 0], [7, 1]]
+        teststraight
+            argument: list
+            returns: tuple[bool, int]
 
     """
 
@@ -93,24 +167,19 @@ class Hand:
 
     def determinestrength(self) -> int:
         """
-        Summary line.
-
-        Extended description of function.
-
-        >>> templatefunction(examplearguments)
-        exampleoutput
-
-        Arguments
-        ---------
-        arg1 : int
-            Description of arg1
-        arg2 : str
-            Description of arg2
-
         Returns
         -------
         int
-            Description of return value
+            hand strength
+            8 = straightflush
+            7 = fourofakind
+            6 = fullhouse
+            5 = flush
+            4 = straight
+            3 = threeofakind
+            2 = twopair
+            1 = pair
+            0 = highcard
 
         """
 
@@ -221,10 +290,6 @@ class Hand:
 
     def teststraight(self, cardsrankcount: list) -> tuple[bool, int]:
         """
-        Summary line.
-
-        Extended description of function.
-
         >>> teststraight([0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1, 0, 1])
         (False, None)
 
