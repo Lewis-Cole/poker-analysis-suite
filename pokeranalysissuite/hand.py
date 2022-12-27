@@ -89,6 +89,30 @@ class Hand:
         self.cards = [
             parsecard(cardsstring[i : i + 2]) for i in range(0, len(cardsstring), 2)
         ]
+        self.strength = self.determinestrength()
+
+    def determinestrength(self) -> int:
+        """
+        Summary line.
+
+        Extended description of function.
+
+        >>> templatefunction(examplearguments)
+        exampleoutput
+
+        Arguments
+        ---------
+        arg1 : int
+            Description of arg1
+        arg2 : str
+            Description of arg2
+
+        Returns
+        -------
+        int
+            Description of return value
+
+        """
 
         self.rankcount = [0 for i in ranks]
         self.suitcount = [0 for i in suits]
@@ -97,16 +121,32 @@ class Hand:
             self.rankcount[card[0]] += 1
             self.suitcount[card[1]] += 1
 
+        # test for straightflush
         self.flushsuits = [self.suitcount.index(i) for i in self.suitcount if i >= 5]
         for flushsuit in self.flushsuits:
             self.flushrankcount = [0 for i in ranks]
             for card in self.cards:
                 if card[1] == flushsuit:
                     self.flushrankcount[card[0]] += 1
+            (self.straightflush, self.straightflushrank) = self.teststraight(
+                self.flushrankcount
+            )
+            if self.straightflush:
+                if self.straightflushrank == 12:
+                    return 9
+                return 8
 
-        self.quads = [self.rankcount.index(i) for i in self.rankcount if i == 4]
-        self.trips = [self.rankcount.index(i) for i in self.rankcount if i == 3]
-        self.pairs = [self.rankcount.index(i) for i in self.rankcount if i == 2]
+        # test for fourofakind
+        self.quads = [
+            i for i in range(0, len(self.rankcount)) if self.rankcount[i] == 4
+        ]
+
+        self.trips = [
+            i for i in range(0, len(self.rankcount)) if self.rankcount[i] == 3
+        ]
+        self.pairs = [
+            i for i in range(0, len(self.rankcount)) if self.rankcount[i] == 2
+        ]
 
     def teststraight(self, cardsrankcount: list) -> tuple[bool, int]:
         """
