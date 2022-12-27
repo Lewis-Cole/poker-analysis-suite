@@ -67,7 +67,7 @@ print(
     (h15.strength, h15.straight, h15.straightrank) == (4, True, 4),
     ": straight strength in hand class",
 )
-h16 = Hand("3d4d4c4d2s5hJd")  # threeofakind
+h16 = Hand("3d4h4c4d2s5hJd")  # threeofakind
 print(
     (h16.strength, h16.threeofakind, h16.threeofakindrank, h16.threeofakindkickers)
     == (3, True, 2, [3, 9]),
