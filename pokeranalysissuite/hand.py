@@ -5,7 +5,7 @@
 #   - determine strength of hand
 
 # - determine hand strength
-#   - handstrength: 9 = "royalflush", 8 = "straightflush", 7 = "fourofakind", 6 = "fullhouse", 5 = "flush",
+#   - handstrength: 8 = "straightflush", 7 = "fourofakind", 6 = "fullhouse", 5 = "flush",
 #       4 = "straight", 3 = "threeofakind", 2 = "twopair", 1 = "pair", 0 = "highcard"
 #   - function testflush() output: (boolean, flushsuit, flushcards)
 #   - function teststraight() output: (boolean, straightrank) [note: go from highest to lowest rank]
@@ -121,8 +121,16 @@ class Hand:
             self.rankcount[card[0]] += 1
             self.suitcount[card[1]] += 1
 
+        # test for flush
+        self.flush = False
+        self.flushsuits = [
+            i for i in range(0, len(self.suitcount)) if self.suitcount[i] >= 5
+        ]
+        if len(self.flushsuits) >= 1:
+            self.flush = True
+
         # test for straightflush
-        self.flushsuits = [self.suitcount.index(i) for i in self.suitcount if i >= 5]
+        self.straightflush = False
         for flushsuit in self.flushsuits:
             self.flushrankcount = [0 for i in ranks]
             for card in self.cards:
@@ -132,21 +140,84 @@ class Hand:
                 self.flushrankcount
             )
             if self.straightflush:
-                if self.straightflushrank == 12:
-                    return 9
-                return 8
+                return 8  # straightflush
 
         # test for fourofakind
+        self.fourofakind = False
         self.quads = [
             i for i in range(0, len(self.rankcount)) if self.rankcount[i] == 4
         ]
+        if len(self.quads) >= 1:
+            self.fourofakind = True
+            self.fourofakindrank = max(self.quads)
+            self.fourofakindkicker = max(
+                [card[0] for card in self.cards if card[0] != self.fourofakindrank]
+            )
+            return 7  # fourofakind
 
+        # test for fullhouse
+        self.fullhouse = False
         self.trips = [
             i for i in range(0, len(self.rankcount)) if self.rankcount[i] == 3
         ]
         self.pairs = [
             i for i in range(0, len(self.rankcount)) if self.rankcount[i] == 2
         ]
+        if len(self.trips) >= 2 or (len(self.trips) >= 1 and len(self.pairs) >= 1):
+            self.fullhouse = True
+            self.fullhousetriprank = max(self.trips)
+            self.fullhousepairrank = max(
+                [i for i in self.trips if i != self.fullhousetriprank] + self.pairs
+            )
+            return 6  # fullhouse
+
+        # return flush result
+        if self.flush:
+            self.flushranks = sorted(
+                [card[0] for card in self.cards if card[1] in self.flushsuits]
+            )[-5:]
+            return 5  # flush
+
+        # test for straight
+        self.straight = False
+        (self.straight, self.straightrank) = self.teststraight(self.rankcount)
+        if self.straight:
+            return 4  # straight
+
+        # test for threeofakind
+        self.threeofakind = False
+        if len(self.trips) >= 1:
+            self.threeofakind = True
+            self.threeofakindrank = max(self.trips)
+            self.threeofakindkickers = sorted(
+                [card[0] for card in self.cards if card[0] != self.threeofakindrank]
+            )[-2:]
+            return 3  # threeofakind
+
+        # test for twopair
+        self.twopair = False
+        if len(self.pairs) >= 2:
+            self.twopair = True
+            self.twopairranks = sorted(self.pairs)[-2:]
+            self.twopairkicker = max(
+                [card[0] for card in self.cards if not card[0] in self.twopairranks]
+            )
+            return 2  # twopair
+
+        # test for pair
+        self.pair = False
+        if len(self.pairs) >= 1:
+            self.pair = True
+            self.pairrank = max(self.pairs)
+            self.pairkickers = sorted(
+                [card[0] for card in self.cards if card[0] != self.pairrank]
+            )[-3:]
+            return 1  # pair
+
+        # return highcard kickers
+        self.highcard = True
+        self.highcards = sorted([card[0] for card in self.cards])[-5:]
+        return 0  # highcard
 
     def teststraight(self, cardsrankcount: list) -> tuple[bool, int]:
         """
